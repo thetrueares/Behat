@@ -14,7 +14,7 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-$reflectionMethod = new ReflectionMethod(CompilerInterface::class, 'process');
+$reflectionMethod = new \ReflectionMethod(CompilerInterface::class, 'process');
 
 $returnType = $reflectionMethod->getReturnType();
 
