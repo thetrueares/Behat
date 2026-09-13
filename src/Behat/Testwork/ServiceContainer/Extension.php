@@ -14,60 +14,116 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-/**
- * Represents Testwork extension mechanism.
- *
- * Extensions are the core entities in Testwork. Almost all framework functionality in Testwork and its different
- * implementations is provided through extensions.
- *
- * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @api
- */
-interface Extension extends CompilerPassInterface
-{
-    /**
-     * Returns the extension config key.
-     *
-     * @return string
-     */
-    public function getConfigKey();
+$reflectionMethod = new ReflectionMethod(CompilerInterface::class, 'process');
 
-    /**
-     * Initializes other extensions.
-     *
-     * This method is called immediately after all extensions are activated but
-     * before any extension `configure()` method is called. This allows extensions
-     * to hook into the configuration of other extensions providing such an
-     * extension point.
-     */
-    public function initialize(ExtensionManager $extensionManager);
+$returnType = $reflectionMethod->getReturnType();
 
+if ($returnType === null) {
     /**
-     * Setups configuration for the extension.
+     * Represents Testwork extension mechanism.
      *
-     * NOTE: If your extension uses the ArrayNodeDefinition passed to this method, your composer.json should declare
-     * a direct dependency on the version(s) of symfony/config that you support.
+     * Extensions are the core entities in Testwork. Almost all framework functionality in Testwork and its different
+     * implementations is provided through extensions.
+     *
+     * @author Konstantin Kudryashov <ever.zet@gmail.com>
+     *
+     * @api
      */
-    public function configure(ArrayNodeDefinition $builder);
+    interface Extension extends CompilerPassInterface
+    {
+        /**
+         * Returns the extension config key.
+         *
+         * @return string
+         */
+        public function getConfigKey();
 
-    /**
-     * Loads extension services into temporary container.
-     *
-     * NOTE: If your extension uses the ContainerBuilder passed to this method, your composer.json should declare
-     * a direct dependency on the version(s) of symfony/dependency-injection that you support.
-     *
-     * @param array<string, mixed> $config
-     */
-    public function load(ContainerBuilder $container, array $config);
+        /**
+         * Initializes other extensions.
+         *
+         * This method is called immediately after all extensions are activated but
+         * before any extension `configure()` method is called. This allows extensions
+         * to hook into the configuration of other extensions providing such an
+         * extension point.
+         */
+        public function initialize(ExtensionManager $extensionManager);
 
-    /**
-     * You can modify the container here before it is dumped to PHP code.
-     *
-     * NOTE: If your extension uses the ContainerBuilder passed to this method, your composer.json should declare
-     *  a direct dependency on the version(s) of symfony/dependency-injection that you support.
-     *
-     * @return void
-     */
-    public function process(ContainerBuilder $container): void;
+        /**
+         * Setups configuration for the extension.
+         *
+         * NOTE: If your extension uses the ArrayNodeDefinition passed to this method, your composer.json should declare
+         * a direct dependency on the version(s) of symfony/config that you support.
+         */
+        public function configure(ArrayNodeDefinition $builder);
+
+        /**
+         * Loads extension services into temporary container.
+         *
+         * NOTE: If your extension uses the ContainerBuilder passed to this method, your composer.json should declare
+         * a direct dependency on the version(s) of symfony/dependency-injection that you support.
+         *
+         * @param array<string, mixed> $config
+         */
+        public function load(ContainerBuilder $container, array $config);
+
+        /**
+         * You can modify the container here before it is dumped to PHP code.
+         *
+         * NOTE: If your extension uses the ContainerBuilder passed to this method, your composer.json should declare
+         *  a direct dependency on the version(s) of symfony/dependency-injection that you support.
+         *
+         * @return void
+         */
+        public function process(ContainerBuilder $container);
+    }
+
+} else {
+    interface Extension extends CompilerPassInterface
+    {
+        /**
+         * Returns the extension config key.
+         *
+         * @return string
+         */
+        public function getConfigKey();
+
+        /**
+         * Initializes other extensions.
+         *
+         * This method is called immediately after all extensions are activated but
+         * before any extension `configure()` method is called. This allows extensions
+         * to hook into the configuration of other extensions providing such an
+         * extension point.
+         */
+        public function initialize(ExtensionManager $extensionManager);
+
+        /**
+         * Setups configuration for the extension.
+         *
+         * NOTE: If your extension uses the ArrayNodeDefinition passed to this method, your composer.json should declare
+         * a direct dependency on the version(s) of symfony/config that you support.
+         */
+        public function configure(ArrayNodeDefinition $builder);
+
+        /**
+         * Loads extension services into temporary container.
+         *
+         * NOTE: If your extension uses the ContainerBuilder passed to this method, your composer.json should declare
+         * a direct dependency on the version(s) of symfony/dependency-injection that you support.
+         *
+         * @param array<string, mixed> $config
+         */
+        public function load(ContainerBuilder $container, array $config);
+
+        /**
+         * You can modify the container here before it is dumped to PHP code.
+         *
+         * NOTE: If your extension uses the ContainerBuilder passed to this method, your composer.json should declare
+         *  a direct dependency on the version(s) of symfony/dependency-injection that you support.
+         *
+         * @return void
+         */
+        public function process(ContainerBuilder $container): void;
+    }
+
 }
